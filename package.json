@@ -5,9 +5,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "index.js",
+  "main": "index.mjs",
   "bin": {
-    "compare-ctwg-keri": "index.js"
+    "compare-ctwg-keri": "index.mjs"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
