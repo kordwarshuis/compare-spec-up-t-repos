@@ -1,4 +1,4 @@
-# Compare CTWG and KERI
+# Compare two Spec-Up-T repositories
 
 ## Instructions
 
@@ -6,7 +6,7 @@
 - Run:
 
 ```bash
-npx @korkor/compare-ctwg-keri
+npx @korkor/compare-spec-up-t-repos
 ```
 
 - Enter GitHub Personal Access Token
@@ -14,6 +14,6 @@ npx @korkor/compare-ctwg-keri
 
 ## Explanation
 
-Compares the terms in the [trustoverip/ctwg-main-glossary](https://github.com/trustoverip/ctwg-main-glossary/tree/main/spec/terms-definitions) and [henkvancann/ks](https://github.com/henkvancann/ks/tree/main/spec/spec_terms_directory) repositories.
+Compares the terms in two repositories.
 
 Compares the terms that are in both repositories. Outputs the results to `./results.txt` and to console.
