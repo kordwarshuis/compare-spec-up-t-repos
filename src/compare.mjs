@@ -25,7 +25,7 @@ export async function compareFiles(config) {
 
     // Entries in B that are also in A
     const inBoth = flatB.filter(entry => flatA.includes(entry));
-    const stringResult = `Entries in both “${config.objectAname}” and “${config.objectBname}”: ` + JSON.stringify(inBoth, null, 2);    
+    const stringResult = `Entries in both “${config.objectAname.name}” and “${config.objectBname.name }”: ` + JSON.stringify(inBoth, null, 2);    
 
     console.log('\n\n');
     console.log(stringResult);

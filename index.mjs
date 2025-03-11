@@ -3,28 +3,63 @@
 import fs from 'fs';
 import path from "path";
 import { downloadMarkdownFiles } from "./src/fetch-md-files.mjs";
-import {config} from "./config.mjs";
+import { getUserInput } from './userInput.mjs';
 import { processFiles } from './src/process.mjs';
 import { compareFiles } from "./src/compare.mjs";
 
-async function loadJSON(filePath) {
-    const fullPath = path.join('.', filePath);
-    const data = await fs.promises.readFile(fullPath, 'utf8');
-    return JSON.parse(data);
+async function loadConfig() {
+    try {
+        const configModule = await import(path.join(process.cwd(), 'config.js'));
+        return configModule.default; // Assuming config.js uses module.exports
+    } catch (error) {
+        console.error('Error loading config:', error);
+        throw error; // Rethrow to handle it in the caller
+    }
 }
 
-await downloadMarkdownFiles(config.ctwg).catch(console.error);
-await downloadMarkdownFiles(config.ks).catch(console.error);
-await processFiles(config.ctwg.outputDir).catch(console.error);
-await processFiles(config.ks.outputDir).catch(console.error);
+(async () => {
+    try {
+        async function loadJSON(filePath) {
+            const fullPath = path.join('.', filePath);
+            const data = await fs.promises.readFile(fullPath, 'utf8');
+            return JSON.parse(data);
+        }
 
-const ctwg = await loadJSON('outputfiles/ctwg-markdown-files.json').catch(console.error);
-const ks = await loadJSON('outputfiles/ks-markdown-files.json').catch(console.error);
+        // Step 1: Get user input and create config.js
+        await getUserInput();
 
-var configCompare = {
-    objectA: ctwg,
-    objectAname: config.ctwg.repo,
-    objectB: ks,
-    objectBname: config.ks.repo
-}
-await compareFiles(configCompare).catch(console.error);
+        // Step 2: Load the config
+        const config = await loadConfig();
+        // console.log('Loaded config:', config);
+
+        // Step 3: Create output directory if it doesn't exist
+        if (!fs.existsSync(config.outputDir)) {
+            fs.mkdirSync(config.outputDir, { recursive: true });
+        }
+
+        // Step 4: Perform operations that depend on config
+        await downloadMarkdownFiles(config.token, config.outputDir, config.repoA);
+        await downloadMarkdownFiles(config.token, config.outputDir, config.repoB);
+        await processFiles(path.join(config.outputDir, '/', config.repoA.name));
+        await processFiles(path.join(config.outputDir, '/', config.repoB.name));
+
+        const jsonA = config.repoA.name + '.json';
+        const jsonB = config.repoB.name + '.json';
+
+        const objectA = await loadJSON(path.join(config.outputDir, jsonA)).catch(console.error);
+        const objectB = await loadJSON(path.join(config.outputDir, jsonB)).catch(console.error);
+
+        // Step 5: Compare files
+        const configCompare = {
+            objectA: objectA,
+            objectAname: config.repoA,
+            objectB: objectB,
+            objectBname: config.repoB
+        };
+        await compareFiles(configCompare);
+
+    } catch (error) {
+        console.error('An error occurred:', error);
+        process.exit(1); // Exit with error code if something fails
+    }
+})();

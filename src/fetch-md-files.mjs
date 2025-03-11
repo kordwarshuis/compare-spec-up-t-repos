@@ -1,22 +1,32 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import axios from 'axios';
-
-export async function downloadMarkdownFiles(config) {
+import url from 'url';
+import { existsSync } from 'fs'; // Import the synchronous fs module
+    
+export async function downloadMarkdownFiles(token, outputDir, config) {
     // GitHub API client with authentication
     const github = axios.create({
         baseURL: 'https://api.github.com',
         headers: {
-            'Authorization': `token ${config.githubToken}`,
+            'Authorization': `token ${token}`,
             'Accept': 'application/vnd.github.v3+json'
         }
     });
     try {
-        // Create output directory if it doesn't exist
-        await fs.mkdir(config.outputDir, { recursive: true });
 
         // Get directory contents from GitHub
-        const response = await github.get(`/repos/${config.owner}/${config.repo}/contents/${config.path}`);
+
+        // Parse the GitHub URL to construct the API endpoint
+        const parsedUrl = url.parse(config.url);
+        const pathParts = parsedUrl.pathname.split('/');
+        const owner = pathParts[1];
+        const repo = pathParts[2];
+        const branch = pathParts[4];
+        const repoPath = pathParts.slice(5).join('/');
+
+        // Get directory contents from GitHub
+        const response = await github.get(`/repos/${owner}/${repo}/contents/${repoPath}?ref=${branch}`);
         const files = response.data;
 
         // Filter for markdown files and download each one
@@ -29,8 +39,11 @@ export async function downloadMarkdownFiles(config) {
                         responseType: 'text'
                     });
 
+                    // Create the directory structure if it doesn't exist
+                    const outputPath = path.join(outputDir, config.name, file.name);
+                    await fs.mkdir(path.dirname(outputPath), { recursive: true });
+
                     // Write to local file
-                    const outputPath = path.join(config.outputDir, file.name);
                     await fs.writeFile(outputPath, fileResponse.data);
                     console.log(`Downloaded: ${file.name}`);
                 } catch (error) {
