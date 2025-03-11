@@ -10,6 +10,11 @@ npx @korkor/compare-spec-up-t-repos
 ```
 
 - Enter GitHub Personal Access Token
+- Go to the URL of first repository in your browser and browse to the `terms and definitions` directory
+- Copy the URL of the `terms and definitions` directory
+- Paste the URL into the console
+- Repeat the last two steps for the second repository
+- Wait for the script to finish
 - Check ./results.txt
 
 ## Explanation
