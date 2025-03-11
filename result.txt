@@ -1,8 +1,0 @@
-Entries in both “ctwg-main-glossary” and “ks”: [
-  "controller",
-  "message",
-  "SCID",
-  "verifiable",
-  "verifier",
-  "witness"
-]
