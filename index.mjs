@@ -6,7 +6,6 @@ import { downloadMarkdownFiles } from "./src/fetch-md-files.mjs";
 import { getUserInput } from './userInput.mjs';
 import { processFiles } from './src/process.mjs';
 import { compareFiles } from "./src/compare.mjs";
-import { createHtmlFile } from './src/create-front-end.mjs';
 
 async function loadConfig() {
     try {
@@ -59,6 +58,8 @@ async function loadConfig() {
         };
         await compareFiles(configCompare);
 
+        // Dynamically import createHtmlFile after config is loaded
+        const { createHtmlFile } = await import('./src/create-front-end.mjs');
         await createHtmlFile();
 
     } catch (error) {
