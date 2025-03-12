@@ -15,10 +15,10 @@ npx @korkor/compare-spec-up-t-repos
 - Paste the URL into the console
 - Repeat the last two steps for the second repository
 - Wait for the script to finish
-- Check ./results.txt
+- Check ./index.html
 
 ## Explanation
 
 Compares the terms in two repositories.
 
-Compares the terms that are in both repositories. Outputs the results to `./results.txt` and to console.
+Compares the terms that are in both repositories. Outputs the results to `./index.html`.
