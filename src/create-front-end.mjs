@@ -1,4 +1,7 @@
 import { writeFile, readFile } from 'node:fs/promises';
+import path from 'node:path';
+const configModule = await import(path.join(process.cwd(), 'config.js'));
+const config = configModule.default;
 
 // Async function to create the HTML file
 const createHtmlFile = async () => {
@@ -43,24 +46,41 @@ const createHtmlFile = async () => {
             background-color: #f1f3f5;
             border-radius: 5px;
             transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .term-item:hover {
             background-color: #e9ecef;
             transform: translateX(5px);
+        }
+        .term-counts {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .badge {
+            margin-left: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="mb-4 text-primary">Compare two repos</h1>
-        
+        <p>Compare <a href="${config.repoA.url}" target="_blank" rel="noopener">${config.repoA.name}</a> and <a href="${config.repoA.url}" target="_blank" rel="noopener">${config.repoA.name}</a></p>
+
+        <pre>
+        Repo A: ${config.repoA.url}
+
+        Repo B: ${config.repoB.url}
+        </pre>
+
         <div class="accordion" id="repoCompareAccordion">
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <button class="accordion-button collapsed" type="button" 
                             data-bs-toggle="collapse" data-bs-target="#collapseBoth" 
                             aria-expanded="false" aria-controls="collapseBoth">
-                        Terms in Both Repos
+                        Terms in Both Repos (${termsBoth.length})
                     </button>
                 </h2>
                 <div id="collapseBoth" class="accordion-collapse collapse" 
@@ -76,7 +96,7 @@ const createHtmlFile = async () => {
                     <button class="accordion-button collapsed" type="button" 
                             data-bs-toggle="collapse" data-bs-target="#collapseRepoA" 
                             aria-expanded="false" aria-controls="collapseRepoA">
-                        Terms Only in Repo A
+                        Terms Only in Repo A (${termsRepoA.length})
                     </button>
                 </h2>
                 <div id="collapseRepoA" class="accordion-collapse collapse" 
@@ -92,7 +112,7 @@ const createHtmlFile = async () => {
                     <button class="accordion-button collapsed" type="button" 
                             data-bs-toggle="collapse" data-bs-target="#collapseRepoB" 
                             aria-expanded="false" aria-controls="collapseRepoB">
-                        Terms Only in Repo B
+                        Terms Only in Repo B (${termsRepoB.length})
                     </button>
                 </h2>
                 <div id="collapseRepoB" class="accordion-collapse collapse" 
@@ -106,6 +126,9 @@ const createHtmlFile = async () => {
     </div>
 
     <script>
+        // Embedded config data
+        const config = ${JSON.stringify(config)};
+
         // Embedded JSON data
         const termsBoth = ${JSON.stringify(termsBoth)};
         const termsRepoA = ${JSON.stringify(termsRepoA)};
@@ -115,10 +138,29 @@ const createHtmlFile = async () => {
         function populateList(listId, terms) {
             const list = document.getElementById(listId);
             if (terms && Array.isArray(terms) && terms.length > 0) {
-                terms.forEach(term => {
+                terms.forEach(item => {
                     const li = document.createElement('li');
                     li.className = 'term-item';
-                    li.textContent = term;
+                    
+                    const termSpan = document.createElement('span');
+                    termSpan.textContent = item.term;
+                    
+                    const countsSpan = document.createElement('span');
+                    countsSpan.className = 'term-counts';
+                    if (item.countInA && item.countInB) {
+                        countsSpan.innerHTML = 
+                            '<span class="badge bg-primary">A: ' + item.countInA + '</span>' +
+                            '<span class="badge bg-secondary">B: ' + item.countInB + '</span>';
+                    } else if (item.countInA) {
+                        countsSpan.innerHTML = 
+                            '<span class="badge bg-primary">A: ' + item.countInA + '</span>';
+                    } else if (item.countInB) {
+                        countsSpan.innerHTML = 
+                            '<span class="badge bg-secondary">B: ' + item.countInB + '</span>';
+                    }
+                    
+                    li.appendChild(termSpan);
+                    li.appendChild(countsSpan);
                     list.appendChild(li);
                 });
             } else {
@@ -149,3 +191,8 @@ const createHtmlFile = async () => {
 
 // Execute the function
 export {createHtmlFile};
+
+// If you want to run it directly when the file is executed
+if (import.meta.url === `file://${process.argv[1]}`) {
+    createHtmlFile();
+}
