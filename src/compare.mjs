@@ -2,15 +2,29 @@ import fs from 'fs/promises';
 import path from 'path';
 
 export async function compareFiles(config) {
+    // console.log('KORKOR config.objectA: ', config.objectA);
+    console.log('KORKOR config.objectB: ', config.objectB);
+    
+    
+    
+    
     const notInB = [];
     const notInA = [];
 
     // Flatten the arrays in objectA and objectB
     const flatA = config.objectA.flat();
+    console.log('KORKOR flatA: ', flatA);
     const flatB = config.objectB.flat();
+    console.log('KORKOR flatB: ', flatB);
+
 
     // Entries in B that are also in A
-    const inBoth = flatB.filter(entry => flatA.includes(entry));
+    // const inBoth = flatB.filter(entry => flatA.includes(entry));
+
+    // Entries in B that are also in A, deduplicate the array
+    const inBoth = [...new Set(flatB.filter(entry => flatA.includes(entry)))];
+
+
     const stringResult = `Entries in both “${config.objectAname.name}” and “${config.objectBname.name}”: ` + JSON.stringify(inBoth, null, 2);
 
     // Find entries in objectA that are not in objectB
@@ -32,8 +46,8 @@ export async function compareFiles(config) {
     const jsonResultNotInA = JSON.stringify(notInA, null, 2);
     const jsonResultNotInB = JSON.stringify(notInB, null, 2);
 
-    console.log('\n\n');
-    console.log(stringResult);
+    // console.log('\n\n');
+    // console.log(stringResult);
 
     // Write stringResult to a file
     await fs
