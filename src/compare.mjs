@@ -16,27 +16,41 @@ export async function compareFiles(config) {
         return { term, countInA, countInB };
     });
 
-    // Format the result string
-    const stringResult = `Frequency of terms in both “${config.objectAname.name}” and “${config.objectBname.name}”:\n` +
+    // Get unique entries for notInA and notInB
+    const uniqueNotInA = [...new Set(flatB.filter(entry => !flatA.includes(entry)))];
+    const uniqueNotInB = [...new Set(flatA.filter(entry => !flatB.includes(entry)))];
+
+    // Count occurrences for notInA (in flatB) and notInB (in flatA)
+    const frequencyNotInA = uniqueNotInA.map(term => ({
+        term,
+        countInB: flatB.filter(item => item === term).length
+    }));
+    const frequencyNotInB = uniqueNotInB.map(term => ({
+        term,
+        countInA: flatA.filter(item => item === term).length
+    }));
+
+    // Format the result strings
+    const stringResultInBoth = `Frequency of terms in both “${config.objectAname.name}” and “${config.objectBname.name}”:\n` +
         frequencyInBoth.map(entry => `${entry.term}: A=${entry.countInA}, B=${entry.countInB}`).join('\n');
+    const stringResultNotInA = `Frequency of terms in “${config.objectBname.name}” but not in “${config.objectAname.name}”:\n` +
+        frequencyNotInA.map(entry => `${entry.term}: B=${entry.countInB}`).join('\n');
+    const stringResultNotInB = `Frequency of terms in “${config.objectAname.name}” but not in “${config.objectBname.name}”:\n` +
+        frequencyNotInB.map(entry => `${entry.term}: A=${entry.countInA}`).join('\n');
 
-    // JSON result for inBoth with frequencies
+    // JSON results with frequencies
     const jsonResultInBoth = JSON.stringify(frequencyInBoth, null, 2);
+    const jsonResultNotInA = JSON.stringify(frequencyNotInA, null, 2);
+    const jsonResultNotInB = JSON.stringify(frequencyNotInB, null, 2);
 
-    // Compute notInA and notInB (unchanged)
-    const notInB = flatA.filter(entry => !flatB.includes(entry));
-    const notInA = flatB.filter(entry => !flatA.includes(entry));
-    const jsonResultNotInA = JSON.stringify(notInA, null, 2);
-    const jsonResultNotInB = JSON.stringify(notInB, null, 2);
-
-    console.log('\n\n');
-    console.log(stringResult);
 
     // Write results to files
-    await fs.writeFile(path.join('.', 'result-in-both.txt'), stringResult).catch(console.error);
+    await fs.writeFile(path.join('.', 'result-in-both.txt'), stringResultInBoth).catch(console.error);
     await fs.writeFile(path.join('.', 'result-in-both.json'), jsonResultInBoth).catch(console.error);
+    await fs.writeFile(path.join('.', 'result-not-in-a.txt'), stringResultNotInA).catch(console.error);
     await fs.writeFile(path.join('.', 'result-not-in-a.json'), jsonResultNotInA).catch(console.error);
+    await fs.writeFile(path.join('.', 'result-not-in-b.txt'), stringResultNotInB).catch(console.error);
     await fs.writeFile(path.join('.', 'result-not-in-b.json'), jsonResultNotInB).catch(console.error);
 
-    return { notInB, notInA, frequencyInBoth };
+    return { frequencyNotInB, frequencyNotInA, frequencyInBoth };
 }
