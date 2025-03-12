@@ -2,21 +2,12 @@ import fs from 'fs/promises';
 import path from 'path';
 
 export async function compareFiles(config) {
-    // console.log('KORKOR config.objectA: ', config.objectA);
-    console.log('KORKOR config.objectB: ', config.objectB);
-    
-    
-    
-    
     const notInB = [];
     const notInA = [];
 
     // Flatten the arrays in objectA and objectB
     const flatA = config.objectA.flat();
-    console.log('KORKOR flatA: ', flatA);
     const flatB = config.objectB.flat();
-    console.log('KORKOR flatB: ', flatB);
-
 
     // Entries in B that are also in A
     // const inBoth = flatB.filter(entry => flatA.includes(entry));
