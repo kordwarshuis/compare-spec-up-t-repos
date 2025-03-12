@@ -1,0 +1,151 @@
+import { writeFile, readFile } from 'node:fs/promises';
+
+// Async function to create the HTML file
+const createHtmlFile = async () => {
+    try {
+        // Read all three JSON files
+        const bothData = await readFile('result-in-both.json', 'utf8');
+        const repoAData = await readFile('result-not-in-b.json', 'utf8');
+        const repoBData = await readFile('result-not-in-a.json', 'utf8');
+
+        const termsBoth = JSON.parse(bothData);
+        const termsRepoA = JSON.parse(repoAData);
+        const termsRepoB = JSON.parse(repoBData);
+
+        // Content for index.html with embedded data
+        const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Repositories</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .terms-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .term-item {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f1f3f5;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+        .term-item:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4 text-primary">Compare two repos</h1>
+        
+        <div class="accordion" id="repoCompareAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" 
+                            data-bs-toggle="collapse" data-bs-target="#collapseBoth" 
+                            aria-expanded="false" aria-controls="collapseBoth">
+                        Terms in Both Repos
+                    </button>
+                </h2>
+                <div id="collapseBoth" class="accordion-collapse collapse" 
+                     data-bs-parent="#repoCompareAccordion">
+                    <div class="accordion-body">
+                        <ul class="terms-list" id="termsBothList"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" 
+                            data-bs-toggle="collapse" data-bs-target="#collapseRepoA" 
+                            aria-expanded="false" aria-controls="collapseRepoA">
+                        Terms Only in Repo A
+                    </button>
+                </h2>
+                <div id="collapseRepoA" class="accordion-collapse collapse" 
+                     data-bs-parent="#repoCompareAccordion">
+                    <div class="accordion-body">
+                        <ul class="terms-list" id="termsRepoAList"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" 
+                            data-bs-toggle="collapse" data-bs-target="#collapseRepoB" 
+                            aria-expanded="false" aria-controls="collapseRepoB">
+                        Terms Only in Repo B
+                    </button>
+                </h2>
+                <div id="collapseRepoB" class="accordion-collapse collapse" 
+                     data-bs-parent="#repoCompareAccordion">
+                    <div class="accordion-body">
+                        <ul class="terms-list" id="termsRepoBList"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Embedded JSON data
+        const termsBoth = ${JSON.stringify(termsBoth)};
+        const termsRepoA = ${JSON.stringify(termsRepoA)};
+        const termsRepoB = ${JSON.stringify(termsRepoB)};
+        
+        // Function to populate a list
+        function populateList(listId, terms) {
+            const list = document.getElementById(listId);
+            if (terms && Array.isArray(terms) && terms.length > 0) {
+                terms.forEach(term => {
+                    const li = document.createElement('li');
+                    li.className = 'term-item';
+                    li.textContent = term;
+                    list.appendChild(li);
+                });
+            } else {
+                list.innerHTML = 
+                    '<li class="term-item text-muted">No terms found</li>';
+            }
+        }
+
+        // Populate all lists
+        (function() {
+            populateList('termsBothList', termsBoth);
+            populateList('termsRepoAList', termsRepoA);
+            populateList('termsRepoBList', termsRepoB);
+        })();
+    </script>
+    <!-- Bootstrap JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>`;
+
+        // Write the HTML file
+        await writeFile('index.html', htmlContent);
+        console.log('index.html has been created successfully!');
+    } catch (err) {
+        console.error('Error creating file:', err);
+    }
+};
+
+// Execute the function
+export {createHtmlFile};

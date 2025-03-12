@@ -6,6 +6,7 @@ import { downloadMarkdownFiles } from "./src/fetch-md-files.mjs";
 import { getUserInput } from './userInput.mjs';
 import { processFiles } from './src/process.mjs';
 import { compareFiles } from "./src/compare.mjs";
+import { createHtmlFile } from './src/create-front-end.mjs';
 
 async function loadConfig() {
     try {
@@ -57,6 +58,8 @@ async function loadConfig() {
             objectBname: config.repoB
         };
         await compareFiles(configCompare);
+
+        await createHtmlFile();
 
     } catch (error) {
         console.error('An error occurred:', error);
