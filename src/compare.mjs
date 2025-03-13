@@ -45,12 +45,9 @@ export async function compareFiles(config) {
 
 
     // Write results to files
-    await fs.writeFile(path.join('.', 'result-in-both.txt'), stringResultInBoth).catch(console.error);
-    await fs.writeFile(path.join('.', 'result-in-both.json'), jsonResultInBoth).catch(console.error);
-    await fs.writeFile(path.join('.', 'result-not-in-a.txt'), stringResultNotInA).catch(console.error);
-    await fs.writeFile(path.join('.', 'result-not-in-a.json'), jsonResultNotInA).catch(console.error);
-    await fs.writeFile(path.join('.', 'result-not-in-b.txt'), stringResultNotInB).catch(console.error);
-    await fs.writeFile(path.join('.', 'result-not-in-b.json'), jsonResultNotInB).catch(console.error);
+    await fs.writeFile(path.join('.', config.outputDir, 'result-in-both.json'), jsonResultInBoth).catch(console.error);
+    await fs.writeFile(path.join('.', config.outputDir, 'result-not-in-a.json'), jsonResultNotInA).catch(console.error);
+    await fs.writeFile(path.join('.', config.outputDir, 'result-not-in-b.json'), jsonResultNotInB).catch(console.error);
 
     return { frequencyNotInB, frequencyNotInA, frequencyInBoth };
 }
