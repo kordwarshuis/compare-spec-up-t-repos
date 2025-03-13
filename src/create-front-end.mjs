@@ -7,9 +7,9 @@ const config = configModule.default;
 const createHtmlFile = async () => {
     try {
         // Read all three JSON files
-        const bothData = await readFile('result-in-both.json', 'utf8');
-        const repoAData = await readFile('result-not-in-b.json', 'utf8');
-        const repoBData = await readFile('result-not-in-a.json', 'utf8');
+        const bothData = await readFile(path.join('.', config.outputDir, 'result-in-both.json') , 'utf8');
+        const repoAData = await readFile(path.join('.', config.outputDir, 'result-not-in-b.json'), 'utf8');
+        const repoBData = await readFile(path.join('.', config.outputDir, 'result-not-in-a.json'), 'utf8');
 
         const termsBoth = JSON.parse(bothData);
         const termsRepoA = JSON.parse(repoAData);
