@@ -66,12 +66,30 @@ const createHtmlFile = async () => {
 <body>
     <div class="container">
         <h1 class="mb-4 text-primary">Compare two repos</h1>
-        <p>Compare <a href="${config.repoA.url}" target="_blank" rel="noopener">${config.repoA.name}</a> and <a href="${config.repoA.url}" target="_blank" rel="noopener">${config.repoA.name}</a></p>
+        <p>This page shows the comparison of terms between two repositories.</p>
+        <p>Terms are categorized into three groups:</p>
+        <ol>
+            <li>Terms in both repositories</li>
+            <li>Terms only in ${config.repoA.name}</li>
+            <li>Terms only in ${config.repoB.name}</li>
+        </ol>
+        <hr>
+        <h2 class="mt-4">Comparison Summary</h2>
+        <p>Number of terms:</p>
+        <ul>
+            <li>Terms in both repositories: ${termsBoth.length}</li>
+            <li>Terms only in ${config.repoA.name}: ${termsRepoA.length}</li>
+            <li>Terms only in ${config.repoB.name}: ${termsRepoB.length}</li>
+        </ul>
+        <hr>
+        <h2>Repositories</h2>
+
+        <p>Compare <a href="${config.repoA.url}" target="_blank" rel="noopener">${config.repoA.name}</a> and <a href="${config.repoB.url}" target="_blank" rel="noopener">${config.repoB.name}</a></p>
 
         <pre>
-        Repo A: ${config.repoA.url}
+${config.repoA.name}: ${config.repoA.url}
 
-        Repo B: ${config.repoB.url}
+${config.repoB.name}: ${config.repoB.url}
         </pre>
 
         <div class="accordion" id="repoCompareAccordion">
@@ -153,10 +171,10 @@ const createHtmlFile = async () => {
                             '<span class="badge bg-secondary">B: ' + item.countInB + '</span>';
                     } else if (item.countInA) {
                         countsSpan.innerHTML = 
-                            '<span class="badge bg-primary">A: ' + item.countInA + '</span>';
+                            '<span class="badge bg-primary"> ' + item.countInA + '</span>';
                     } else if (item.countInB) {
                         countsSpan.innerHTML = 
-                            '<span class="badge bg-secondary">B: ' + item.countInB + '</span>';
+                            '<span class="badge bg-primary"> ' + item.countInB + '</span>';
                     }
                     
                     li.appendChild(termSpan);
