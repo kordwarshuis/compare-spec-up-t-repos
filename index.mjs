@@ -32,6 +32,12 @@ async function loadConfig() {
         const config = await loadConfig();
         // console.log('Loaded config:', config);
 
+        // if config.outputDir as a directory exists, stop the process
+        if (fs.existsSync(path.join(process.cwd(), config.outputDir))) {
+            console.log('The output directory already exists. Please delete or rename it.');
+            process.exit(1);
+        }
+
         // Step 3: Create output directory if it doesn't exist
         if (!fs.existsSync(config.outputDir)) {
             fs.mkdirSync(config.outputDir, { recursive: true });
@@ -51,6 +57,7 @@ async function loadConfig() {
 
         // Step 5: Compare files
         const configCompare = {
+            outputDir: config.outputDir,
             objectA: objectA,
             objectAname: config.repoA,
             objectB: objectB,
