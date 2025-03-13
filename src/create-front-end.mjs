@@ -66,6 +66,10 @@ const createHtmlFile = async () => {
 <body>
     <div class="container">
         <h1 class="mb-4 text-primary">Compare two repos</h1>
+
+        <h2>More info</h2>
+        <p>Find more info at 👉 <a href="https://github.com/kordwarshuis/compare-spec-up-t-repos/blob/main/README.md">the README.md on GitHub</a></p>
+
         <p>This page shows the comparison of terms between two repositories.</p>
         <p>Terms are categorized into three groups:</p>
         <ol>
