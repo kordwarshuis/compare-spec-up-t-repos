@@ -45,19 +45,19 @@ export async function downloadMarkdownFiles(token, outputDir, config) {
 
                     // Write to local file
                     await fs.writeFile(outputPath, fileResponse.data);
-                    console.log(`Downloaded: ${file.name}`);
+                    console.log(`✅ Downloaded: ${file.name}`);
                 } catch (error) {
-                    console.error(`Error downloading ${file.name}:`, error.message);
+                    console.error(`❌ Error downloading ${file.name}:`, error.message);
                 }
             });
 
         // Wait for all downloads to complete
         await Promise.all(downloadPromises);
-        console.log('Download complete!');
+        console.log('✅ Download complete!');
     } catch (error) {
-        console.error('Error:', error.message);
+        console.error('❌ Error:', error.message);
         if (error.response) {
-            console.error('GitHub API response:', error.response.data);
+            console.error('❌ GitHub API response:', error.response.data);
         }
     }
 }

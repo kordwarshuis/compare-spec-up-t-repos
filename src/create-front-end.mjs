@@ -201,9 +201,9 @@ ${config.repoB.name}: ${config.repoB.url}
 
         // Write the HTML file
         await writeFile('index-' + config.outputDir + '.html', htmlContent);
-        console.log('index.html has been created successfully!');
+        console.log('✅ html file has been created successfully!');
     } catch (err) {
-        console.error('Error creating file:', err);
+        console.error('❌ Error creating file:', err);
     }
 };
 

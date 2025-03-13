@@ -12,7 +12,7 @@ async function loadConfig() {
         const configModule = await import(path.join(process.cwd(), 'config.js'));
         return configModule.default; // Assuming config.js uses module.exports
     } catch (error) {
-        console.error('Error loading config:', error);
+        console.error('❌ Error loading config:', error);
         throw error; // Rethrow to handle it in the caller
     }
 }
@@ -30,11 +30,10 @@ async function loadConfig() {
 
         // Step 2: Load the config
         const config = await loadConfig();
-        // console.log('Loaded config:', config);
 
         // if config.outputDir as a directory exists, stop the process
         if (fs.existsSync(path.join(process.cwd(), config.outputDir))) {
-            console.log('The output directory already exists. Please delete or rename it.');
+            console.log('ℹ️ The output directory already exists. Please delete or rename it.\n\n👉 For more info, see https://github.com/kordwarshuis/compare-spec-up-t-repos/blob/main/README.md');
             process.exit(1);
         }
 
@@ -70,7 +69,7 @@ async function loadConfig() {
         await createHtmlFile();
 
     } catch (error) {
-        console.error('An error occurred:', error);
+        console.error('❌ An error occurred:', error);
         process.exit(1); // Exit with error code if something fails
     }
 })();

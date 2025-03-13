@@ -6,9 +6,11 @@ export async function getUserInput() {
     const configPath = path.join(process.cwd(), 'config.js');
 
     if (fs.existsSync(configPath)) {
-        console.log('config.js already exists. Skipping user input.');
+        console.log('ℹ️ config.js already exists. Skipping user input.');
         return;
     }
+
+    console.log("👉 For more info, see https://github.com/kordwarshuis/compare-spec-up-t-repos/blob/main/README.md");
 
     const rl = readline.createInterface({
         input: process.stdin,
@@ -36,5 +38,5 @@ export async function getUserInput() {
     `;
 
     fs.writeFileSync(configPath, configContent.trim());
-    console.log('config.js has been created.');
+    console.log('✅ config.js has been created.');
 }

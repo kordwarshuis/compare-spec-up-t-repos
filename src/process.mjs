@@ -31,7 +31,7 @@ export async function processFiles(directoryPath) {
         );
         return finalArray;
     } catch (err) {
-        console.log('Error processing files: ' + err);
+        console.log('❌ Error processing files: ' + err);
         throw err;
     }
 }
