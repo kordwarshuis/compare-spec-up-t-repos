@@ -21,7 +21,7 @@ const createHtmlFile = async () => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compare Repositories</title>
+    <title>Compare Two Repositories</title>
     <!-- Bootstrap CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -114,7 +114,7 @@ ${config.repoB.name}: ${config.repoB.url}
                     <button class="accordion-button collapsed" type="button" 
                             data-bs-toggle="collapse" data-bs-target="#collapseRepoA" 
                             aria-expanded="false" aria-controls="collapseRepoA">
-                        Terms Only in Repo A (${termsRepoA.length})
+                        Terms only in first repository (A) (${termsRepoA.length})
                     </button>
                 </h2>
                 <div id="collapseRepoA" class="accordion-collapse collapse" 
@@ -130,7 +130,7 @@ ${config.repoB.name}: ${config.repoB.url}
                     <button class="accordion-button collapsed" type="button" 
                             data-bs-toggle="collapse" data-bs-target="#collapseRepoB" 
                             aria-expanded="false" aria-controls="collapseRepoB">
-                        Terms Only in Repo B (${termsRepoB.length})
+                        Terms only in second repository (B) (${termsRepoB.length})
                     </button>
                 </h2>
                 <div id="collapseRepoB" class="accordion-collapse collapse" 

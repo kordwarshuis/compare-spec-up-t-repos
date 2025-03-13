@@ -20,11 +20,11 @@ export async function getUserInput() {
     const question = (query) => new Promise((resolve) => rl.question(query, resolve));
 
     const token = await question('Enter your token: ');
-    const outputDir = await question('Enter the output directory: ');
-    const repoAname = await question('Enter the name of repo A: ');
-    const repoAurl = await question('Enter the URL of repo A: ');
-    const repoBname = await question('Enter the name of repo B: ');
-    const repoBurl = await question('Enter the URL of repo B: ');
+    const outputDir = await question('Choose name for the output directory: ');
+    const repoAname = await question('Choose a name for the first repository (A): ');
+    const repoAurl = await question('Enter the URL of the first repository (A): ');
+    const repoBname = await question('Enter the name of the second repository (B): ');
+    const repoBurl = await question('Enter the URL of the second repository (B): ');
 
     rl.close();
 
