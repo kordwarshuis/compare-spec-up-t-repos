@@ -5,22 +5,21 @@ This is a local-machine command line tool. People who prepare the comparison of 
 - (partly) replace their definitions with references to the companion glossary
 Read below how to make a comparison that results in an index.html file with the results of an exact match (no fuzzy search possible yet)
 
-:::warning
-If you decide to put this tool in a public repository, make sure to remove the token before pushing it to the repository. You can do this by removing the token from the `config.js`.
-
-Example:
-
-```js
-module.exports = {
-    token: 'ghp_ABCDEFG123456789',
-    …
-    …
-}
-```
-
-Remove `ghp_ABCDEFG123456789` from the file before pushing it to the repository.
-
-:::
+> ⚠️ **Warning**
+> 
+> If you decide to put this tool in a public repository, make sure to remove the token before pushing it to the repository. You can do this by removing the token from the `config.js`.
+> 
+> Example:
+> 
+> ```js
+> module.exports = {
+>     token: 'ghp_ABCDEFG123456789',
+>     …
+>     …
+> }
+> ```
+> 
+> Remove `ghp_ABCDEFG123456789` from the file before pushing it to the repository.
 
 ## Instructions
 
