@@ -6,6 +6,8 @@ import { downloadMarkdownFiles } from "./src/fetch-md-files.mjs";
 import { getUserInput } from './userInput.mjs';
 import { processFiles } from './src/process.mjs';
 import { compareFiles } from "./src/compare.mjs";
+import { processMarkdownFiles } from './src/markdown-to-json.mjs';
+import { compareTerms } from './src/compare-full-markdown.mjs';
 
 async function loadConfig() {
     try {
@@ -47,6 +49,12 @@ async function loadConfig() {
         await downloadMarkdownFiles(config.token, config.outputDir, config.repoB);
         await processFiles(path.join(config.outputDir, '/', config.repoA.name));
         await processFiles(path.join(config.outputDir, '/', config.repoB.name));
+
+        await processMarkdownFiles(path.join(config.outputDir, config.repoA.name), path.join(config.outputDir, config.repoA.name + '.json'));
+        await processMarkdownFiles(path.join(config.outputDir, config.repoB.name), path.join(config.outputDir, config.repoB.name + '.json'));
+
+        await compareTerms(path.join(config.outputDir, config.repoA.name + '.json'), path.join(config.outputDir, config.repoB.name + '.json'), path.join(config.outputDir, 'compare-terms.html'));
+
 
         const jsonA = config.repoA.name + '.json';
         const jsonB = config.repoB.name + '.json';
