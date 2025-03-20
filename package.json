@@ -1,6 +1,6 @@
 {
   "name": "@korkor/compare-spec-up-t-repos",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "",
   "publishConfig": {
     "access": "public"
