@@ -25,15 +25,15 @@ function preprocessDefinition(text) {
     return text;
 }
 
-// Function to create HTML diff between two strings with enhanced colors
+// Function to create HTML diff between two strings with Bootstrap classes
 function createHtmlDiff(text1, text2) {
     const diff = diffLines(text1, text2, { ignoreWhitespace: true });
     let html = '';
     diff.forEach(part => {
         if (part.added) {
-            html += `<ins style="display: block; background-color: #00cc00; color: #111 !important;">${escapeHtml(part.value)}</ins>`;
+            html += `<ins class="bg-success p-1">${escapeHtml(part.value)}</ins>`;
         } else if (part.removed) {
-            html += `<del style="display: block; background-color: #ff3333; color: #111 !important;">${escapeHtml(part.value)}</del>`;
+            html += `<del class="bg-danger p-1">${escapeHtml(part.value)}</del>`;
         } else {
             html += escapeHtml(part.value);
         }
@@ -67,28 +67,45 @@ async function compareTerms(jsonPath1, jsonPath2, outputHtmlPath) {
     const file2Terms = new Set(file2Data.flatMap(obj => obj.terms));
     const commonTerms = [...new Set([...file1Terms].filter(term => file2Terms.has(term)))].sort();
 
-    // Build HTML content
+    // Build HTML content with Bootstrap CDN
     let html = `
 <!DOCTYPE html>
 <html>
 <head>
     <title>Term Comparison</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid black; padding: 8px; text-align: left; vertical-align: top; }
-        th { background-color: #f2f2f2; }
-        ins { background-color: #00cc00; color: white; text-decoration: none; padding: 2px; }
-        del { background-color: #ff3333; color: white; text-decoration: none; padding: 2px; }
+        ins, del {
+                display: block;
+        }
+        ins.bg-success {
+                background-color: #cfc !important;
+        }
+        del.bg-danger {
+                background-color: #fcc !important;
+                text-decoration: none;
+        }
+        ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        }
     </style>
 </head>
 <body>
-<table>
-    <tr>
-        <th>Term</th>
-        <th>File1 Definitions</th>
-        <th>File2 Definitions</th>
-        <th>Diff</th>
-    </tr>
+<div class="container mt-4">
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th scope="col">Term</th>
+                <th scope="col">File1 Definitions</th>
+                <th scope="col">File2 Definitions</th>
+                <th scope="col">Diff</th>
+            </tr>
+        </thead>
+        <tbody>
 `;
 
     // Generate table rows
@@ -134,17 +151,19 @@ async function compareTerms(jsonPath1, jsonPath2, outputHtmlPath) {
         const diffHtml = createHtmlDiff(file1Defs, file2Defs);
 
         html += `
-    <tr>
-        <td>${escapeHtml(term)}</td>
-        <td>${file1Display}</td>
-        <td>${file2Display}</td>
-        <td>${diffHtml}</td>
-    </tr>
+            <tr>
+                <td>${escapeHtml(term)}</td>
+                <td>${file1Display}</td>
+                <td>${file2Display}</td>
+                <td>${diffHtml}</td>
+            </tr>
 `;
     }
 
     html += `
-</table>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
 `;
