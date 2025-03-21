@@ -4,7 +4,7 @@ const configModule = await import(path.join(process.cwd(), 'config.js'));
 const config = configModule.default;
 
 // Async function to create the HTML file
-const createHtmlFile = async () => {
+const createIndexHtmlFile = async () => {
     try {
         // Read all three JSON files
         const bothData = await readFile(path.join('.', config.outputDir, 'result-in-both.json') , 'utf8');
@@ -212,9 +212,9 @@ ${config.repoB.name}: ${config.repoB.url}
 };
 
 // Execute the function
-export {createHtmlFile};
+export {createIndexHtmlFile};
 
 // If you want to run it directly when the file is executed
 if (import.meta.url === `file://${process.argv[1]}`) {
-    createHtmlFile();
+    createIndexHtmlFile();
 }
