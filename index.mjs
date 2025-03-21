@@ -2,12 +2,12 @@
 
 import fs from 'fs';
 import path from "path";
-import { downloadMarkdownFiles } from "./src/fetch-md-files.mjs";
-import { getUserInput } from './userInput.mjs';
-import { processFiles } from './src/process.mjs';
+import { downloadMarkdownFiles } from "./src/download-markdown-files.mjs";
+import { getUserInput } from './get-user-input.mjs';
+import { processFiles } from './src/process-files.mjs';
 import { compareFiles } from "./src/compare.mjs";
 import { processMarkdownFiles } from './src/markdown-to-json.mjs';
-import { compareTerms } from './src/compare-full-markdown.mjs';
+import { diffTermsAndDefs } from './src/diff-terms-and-defs.mjs';
 
 async function loadConfig() {
     try {
@@ -53,8 +53,8 @@ async function loadConfig() {
         await processMarkdownFiles(path.join(config.outputDir, config.repoA.name), path.join(config.outputDir, config.repoA.name + '.json'));
         await processMarkdownFiles(path.join(config.outputDir, config.repoB.name), path.join(config.outputDir, config.repoB.name + '.json'));
 
-        await compareTerms(path.join(config.outputDir, config.repoA.name + '.json'), path.join(config.outputDir, config.repoB.name + '.json'), path.join(config.outputDir, 'compare-terms.html'));
-
+        // Compare terms and definitions
+        await diffTermsAndDefs(path.join(config.outputDir, config.repoA.name + '.json'), path.join(config.outputDir, config.repoB.name + '.json'), path.join(config.outputDir, `diff-terms-and-defs-${config.repoA.name}-${config.repoB.name}.html`));
 
         const jsonA = config.repoA.name + '.json';
         const jsonB = config.repoB.name + '.json';
@@ -72,9 +72,9 @@ async function loadConfig() {
         };
         await compareFiles(configCompare);
 
-        // Dynamically import createHtmlFile after config is loaded
-        const { createHtmlFile } = await import('./src/create-front-end.mjs');
-        await createHtmlFile();
+        // Dynamically import createIndexHtmlFile after config is loaded
+        const { createIndexHtmlFile } = await import('./src/create-indexhtml-file.mjs');
+        await createIndexHtmlFile();
 
     } catch (error) {
         console.error('❌ An error occurred:', error);
