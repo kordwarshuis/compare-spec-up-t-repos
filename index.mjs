@@ -54,7 +54,10 @@ async function loadConfig() {
         await processMarkdownFiles(path.join(config.outputDir, config.repoB.name), path.join(config.outputDir, config.repoB.name + '.json'));
 
         // Compare terms and definitions
-        await diffTermsAndDefs(path.join(config.outputDir, config.repoA.name + '.json'), path.join(config.outputDir, config.repoB.name + '.json'), path.join(config.outputDir, `diff-terms-and-defs-${config.repoA.name}-${config.repoB.name}.html`));
+        await diffTermsAndDefs(
+            path.join(config.outputDir, config.repoA.name + '.json'),
+            path.join(config.outputDir, config.repoB.name + '.json'),
+            path.join(`diff-terms-and-defs-${config.outputDir}.html`));
 
         const jsonA = config.repoA.name + '.json';
         const jsonB = config.repoB.name + '.json';
