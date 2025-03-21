@@ -53,7 +53,7 @@ export async function downloadMarkdownFiles(token, outputDir, config) {
 
         // Wait for all downloads to complete
         await Promise.all(downloadPromises);
-        console.log('✅ Download files complete!');
+        console.log(`✅ Download ${repo} files complete!`);
     } catch (error) {
         console.error('❌ Error:', error.message);
         if (error.response) {
