@@ -48,27 +48,28 @@ function createHtmlDiff(text1, text2) {
  * @param {string} outputHtmlPath - Path for the output HTML file
  */
 async function diffTermsAndDefs(jsonPath1, jsonPath2, outputHtmlPath) {
-    // Read and parse JSON files
-    const file1Json = JSON.parse(await readFile(jsonPath1, 'utf8'));
-    const file2Json = JSON.parse(await readFile(jsonPath2, 'utf8'));
+    try { 
+        // Read and parse JSON files
+        const file1Json = JSON.parse(await readFile(jsonPath1, 'utf8'));
+        const file2Json = JSON.parse(await readFile(jsonPath2, 'utf8'));
 
-    // Structure the data
-    const file1Data = file1Json.map(obj => {
-        const key = Object.keys(obj)[0];
-        return { key, terms: obj[key].term, definition: obj[key].definition };
-    });
-    const file2Data = file2Json.map(obj => {
-        const key = Object.keys(obj)[0];
-        return { key, terms: obj[key].term, definition: obj[key].definition };
-    });
+        // Structure the data
+        const file1Data = file1Json.map(obj => {
+            const key = Object.keys(obj)[0];
+            return { key, terms: obj[key].term, definition: obj[key].definition };
+        });
+        const file2Data = file2Json.map(obj => {
+            const key = Object.keys(obj)[0];
+            return { key, terms: obj[key].term, definition: obj[key].definition };
+        });
 
-    // Find common terms
-    const file1Terms = new Set(file1Data.flatMap(obj => obj.terms));
-    const file2Terms = new Set(file2Data.flatMap(obj => obj.terms));
-    const commonTerms = [...new Set([...file1Terms].filter(term => file2Terms.has(term)))].sort();
+        // Find common terms
+        const file1Terms = new Set(file1Data.flatMap(obj => obj.terms));
+        const file2Terms = new Set(file2Data.flatMap(obj => obj.terms));
+        const commonTerms = [...new Set([...file1Terms].filter(term => file2Terms.has(term)))].sort();
 
-    // Build HTML content with Bootstrap CDN
-    let html = `
+        // Build HTML content with Bootstrap CDN
+        let html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -108,49 +109,49 @@ async function diffTermsAndDefs(jsonPath1, jsonPath2, outputHtmlPath) {
         <tbody>
 `;
 
-    // Generate table rows
-    for (const term of commonTerms) {
-        const file1Defs = file1Data
-            .filter(obj => obj.terms.includes(term))
-            .map(obj => {
-                const processedDef = preprocessDefinition(obj.definition);
-                const mdHtml = marked(processedDef);
-                return purify.sanitize(mdHtml);
-            })
-            .join('\n\n');
+        // Generate table rows
+        for (const term of commonTerms) {
+            const file1Defs = file1Data
+                .filter(obj => obj.terms.includes(term))
+                .map(obj => {
+                    const processedDef = preprocessDefinition(obj.definition);
+                    const mdHtml = marked(processedDef);
+                    return purify.sanitize(mdHtml);
+                })
+                .join('\n\n');
 
-        const file2Defs = file2Data
-            .filter(obj => obj.terms.includes(term))
-            .map(obj => {
-                const processedDef = preprocessDefinition(obj.definition);
-                const mdHtml = marked(processedDef);
-                return purify.sanitize(mdHtml);
-            })
-            .join('\n\n');
+            const file2Defs = file2Data
+                .filter(obj => obj.terms.includes(term))
+                .map(obj => {
+                    const processedDef = preprocessDefinition(obj.definition);
+                    const mdHtml = marked(processedDef);
+                    return purify.sanitize(mdHtml);
+                })
+                .join('\n\n');
 
-        const file1Display = file1Data
-            .filter(obj => obj.terms.includes(term))
-            .map(obj => {
-                const processedDef = preprocessDefinition(obj.definition);
-                const mdHtml = marked(processedDef);
-                const sanitizedHtml = purify.sanitize(mdHtml);
-                return `<strong>${escapeHtml(obj.key)}:</strong> ${sanitizedHtml}`;
-            })
-            .join('<br><br>');
+            const file1Display = file1Data
+                .filter(obj => obj.terms.includes(term))
+                .map(obj => {
+                    const processedDef = preprocessDefinition(obj.definition);
+                    const mdHtml = marked(processedDef);
+                    const sanitizedHtml = purify.sanitize(mdHtml);
+                    return `<strong>${escapeHtml(obj.key)}:</strong> ${sanitizedHtml}`;
+                })
+                .join('<br><br>');
 
-        const file2Display = file2Data
-            .filter(obj => obj.terms.includes(term))
-            .map(obj => {
-                const processedDef = preprocessDefinition(obj.definition);
-                const mdHtml = marked(processedDef);
-                const sanitizedHtml = purify.sanitize(mdHtml);
-                return `<strong>${escapeHtml(obj.key)}:</strong> ${sanitizedHtml}`;
-            })
-            .join('<br><br>');
+            const file2Display = file2Data
+                .filter(obj => obj.terms.includes(term))
+                .map(obj => {
+                    const processedDef = preprocessDefinition(obj.definition);
+                    const mdHtml = marked(processedDef);
+                    const sanitizedHtml = purify.sanitize(mdHtml);
+                    return `<strong>${escapeHtml(obj.key)}:</strong> ${sanitizedHtml}`;
+                })
+                .join('<br><br>');
 
-        const diffHtml = createHtmlDiff(file1Defs, file2Defs);
+            const diffHtml = createHtmlDiff(file1Defs, file2Defs);
 
-        html += `
+            html += `
             <tr>
                 <td>${escapeHtml(term)}</td>
                 <td>${file1Display}</td>
@@ -158,9 +159,9 @@ async function diffTermsAndDefs(jsonPath1, jsonPath2, outputHtmlPath) {
                 <td>${diffHtml}</td>
             </tr>
 `;
-    }
+        }
 
-    html += `
+        html += `
         </tbody>
     </table>
 </div>
@@ -168,8 +169,12 @@ async function diffTermsAndDefs(jsonPath1, jsonPath2, outputHtmlPath) {
 </html>
 `;
 
-    // Write to file
-    await writeFile(outputHtmlPath, html, 'utf8');
+        // Write to file
+        await writeFile(outputHtmlPath, html, 'utf8');
+        console.log(`✅ ${outputHtmlPath} has been created successfully!`);
+    } catch (err) {
+        console.error('❌ Error creating file:', err);
+    }
 }
 
 // Export the function
