@@ -47,7 +47,7 @@ function createHtmlDiff(text1, text2) {
  * @param {string} jsonPath2 - Path to the second JSON file
  * @param {string} outputHtmlPath - Path for the output HTML file
  */
-async function compareTerms(jsonPath1, jsonPath2, outputHtmlPath) {
+async function diffTermsAndDefs(jsonPath1, jsonPath2, outputHtmlPath) {
     // Read and parse JSON files
     const file1Json = JSON.parse(await readFile(jsonPath1, 'utf8'));
     const file2Json = JSON.parse(await readFile(jsonPath2, 'utf8'));
@@ -173,7 +173,7 @@ async function compareTerms(jsonPath1, jsonPath2, outputHtmlPath) {
 }
 
 // Export the function
-export { compareTerms };
+export { diffTermsAndDefs };
 
 // Usage example
 // compareTerms('file1.json', 'file2.json', 'output.html').catch(console.error);
