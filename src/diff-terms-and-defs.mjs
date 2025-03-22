@@ -89,10 +89,12 @@ async function diffTermsAndDefs(jsonPath1, jsonPath2, outputHtmlPath) {
                 text-decoration: none;
         }
         ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
         }
+        table img {
+            max-width: 50px;}
     </style>
 </head>
 <body>
