@@ -29,6 +29,8 @@ export async function downloadMarkdownFiles(token, outputDir, config) {
         const response = await github.get(`/repos/${owner}/${repo}/contents/${repoPath}?ref=${branch}`);
         const files = response.data;
 
+        console.log(`✅ Downloading ${repo} files`);
+
         // Filter for markdown files and download each one
         const downloadPromises = files
             .filter(file => file.name.endsWith('.md'))
