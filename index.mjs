@@ -71,7 +71,6 @@ async function loadConfig() {
             path.join(`diff-terms-and-defs-${config.outputDir}.html`));
 
         const jsonA = 'extracted-terms-' + config.repoA.name + '.json';
-        console.log('KORKOR jsonA: ', jsonA);
         const jsonB = 'extracted-terms-' + config.repoB.name + '.json';
 
         const objectA = await loadJSON(path.join(config.outputDir, jsonA)).catch(console.error);

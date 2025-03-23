@@ -2,11 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 export async function compareTerms(config) {
-
-    // console.log('KORKOR config.objectA: ', config.objectA);
-
     // Flatten the arrays in objectA and objectB
-    // console.log('KORKOR config.objectA: ', config.objectA);
     const flatA = config.objectA.flat();
     const flatB = config.objectB.flat();
 
@@ -15,7 +11,6 @@ export async function compareTerms(config) {
 
     // Count occurrences in flatA and flatB for each common term
     const frequencyInBoth = uniqueInBoth.map(term => {
-        // console.log('KORKOR term: ', term);
         const countInA = flatA.filter(item => item === term).length;
         const countInB = flatB.filter(item => item === term).length;
         return { term, countInA, countInB };

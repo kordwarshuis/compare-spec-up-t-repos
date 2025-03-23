@@ -7,8 +7,6 @@ import path from 'path';
  * @param {string} outputJsonPath - The path where the output JSON file will be written.
  */
 async function extractTermsAndDefsToJson(directoryPath, outputJsonPath) {
-    console.log('KORKOR outputJsonPath: ', outputJsonPath);
-    console.log('KORKOR directoryPath: ', directoryPath);
     // Read all files in the specified directory
     const files = await readdir(directoryPath);
 
