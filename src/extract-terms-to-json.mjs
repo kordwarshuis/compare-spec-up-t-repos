@@ -2,7 +2,6 @@ import fs from 'fs/promises';
 import path from 'path';
 
 export async function extractTermsToJson(directoryPath) {
-    console.log('KORKOR directoryPath: ', directoryPath);
     const finalArray = [];
     const defPattern = /^\[\[def:/;
     const trefPattern = /^\[\[tref:.*?,/;
