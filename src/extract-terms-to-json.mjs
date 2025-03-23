@@ -1,7 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-export async function processFiles(directoryPath) {
+export async function extractTermsToJson(directoryPath) {
+    console.log('KORKOR directoryPath: ', directoryPath);
     const finalArray = [];
     const defPattern = /^\[\[def:/;
     const trefPattern = /^\[\[tref:.*?,/;
@@ -25,8 +26,9 @@ export async function processFiles(directoryPath) {
                 }
             }
         }
+
         await fs.writeFile(
-            path.join(directoryPath, '..', path.basename(directoryPath) + '.json'),
+            path.join(directoryPath, '..', 'extracted-terms-' + path.basename(directoryPath) + '.json'),
             JSON.stringify(finalArray, null, 2)
         );
         return finalArray;

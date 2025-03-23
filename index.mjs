@@ -4,9 +4,9 @@ import fs from 'fs';
 import path from "path";
 import { downloadMarkdownFiles } from "./src/download-markdown-files.mjs";
 import { getUserInput } from './get-user-input.mjs';
-import { processFiles } from './src/process-files.mjs';
-import { compareFiles } from "./src/compare.mjs";
-import { processMarkdownFiles } from './src/markdown-to-json.mjs';
+import { extractTermsToJson } from './src/extract-terms-to-json.mjs';
+import { compareTerms } from "./src/compare-terms.mjs";
+import { extractTermsAndDefsToJson } from './src/extract-terms-and-defs-to-json.mjs';
 import { diffTermsAndDefs } from './src/diff-terms-and-defs.mjs';
 
 async function loadConfig() {
@@ -44,23 +44,35 @@ async function loadConfig() {
             fs.mkdirSync(config.outputDir, { recursive: true });
         }
 
-        // Step 4: Perform operations that depend on config
+        // Perform operations that depend on config
+
+        // Step 4: Download markdown files
         await downloadMarkdownFiles(config.token, config.outputDir, config.repoA);
         await downloadMarkdownFiles(config.token, config.outputDir, config.repoB);
-        await processFiles(path.join(config.outputDir, '/', config.repoA.name));
-        await processFiles(path.join(config.outputDir, '/', config.repoB.name));
 
-        await processMarkdownFiles(path.join(config.outputDir, config.repoA.name), path.join(config.outputDir, config.repoA.name + '.json'));
-        await processMarkdownFiles(path.join(config.outputDir, config.repoB.name), path.join(config.outputDir, config.repoB.name + '.json'));
+
+
+        await extractTermsToJson(path.join(config.outputDir, '/', '' + config.repoA.name));
+        await extractTermsToJson(path.join(config.outputDir, '/', config.repoB.name));
+
+        await extractTermsAndDefsToJson(
+            path.join(config.outputDir, config.repoA.name),
+            path.join(config.outputDir, 'extracted-terms-and-defs-' + config.repoA.name + '.json')
+        );
+        await extractTermsAndDefsToJson(
+            path.join(config.outputDir, config.repoB.name),
+            path.join(config.outputDir, 'extracted-terms-and-defs-' + config.repoB.name + '.json')
+        );
 
         // Compare terms and definitions
         await diffTermsAndDefs(
-            path.join(config.outputDir, config.repoA.name + '.json'),
-            path.join(config.outputDir, config.repoB.name + '.json'),
+            path.join(config.outputDir, 'extracted-terms-and-defs-' + config.repoA.name + '.json'),
+            path.join(config.outputDir, 'extracted-terms-and-defs-' + config.repoB.name + '.json'),
             path.join(`diff-terms-and-defs-${config.outputDir}.html`));
 
-        const jsonA = config.repoA.name + '.json';
-        const jsonB = config.repoB.name + '.json';
+        const jsonA = 'extracted-terms-' + config.repoA.name + '.json';
+        console.log('KORKOR jsonA: ', jsonA);
+        const jsonB = 'extracted-terms-' + config.repoB.name + '.json';
 
         const objectA = await loadJSON(path.join(config.outputDir, jsonA)).catch(console.error);
         const objectB = await loadJSON(path.join(config.outputDir, jsonB)).catch(console.error);
@@ -73,7 +85,7 @@ async function loadConfig() {
             objectB: objectB,
             objectBname: config.repoB
         };
-        await compareFiles(configCompare);
+        await compareTerms(configCompare);
 
         // Dynamically import createIndexHtmlFile after config is loaded
         const { createIndexHtmlFile } = await import('./src/create-indexhtml-file.mjs');
