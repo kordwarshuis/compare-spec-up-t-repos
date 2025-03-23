@@ -9,6 +9,14 @@ import { compareTerms } from "./src/compare-terms.mjs";
 import { extractTermsAndDefsToJson } from './src/extract-terms-and-defs-to-json.mjs';
 import { diffTermsAndDefs } from './src/diff-terms-and-defs.mjs';
 
+const fileNamePrefixes = {
+    extractedTerms: 'extracted-terms-',
+    extractedTermsAndDefs: 'extracted-terms-and-defs-',
+    diffTermsAndDefs: 'diff-terms-and-defs-'
+};
+
+let menu;
+
 async function loadConfig() {
     try {
         const configModule = await import(path.join(process.cwd(), 'config.js'));
@@ -32,6 +40,15 @@ async function loadConfig() {
 
         // Step 2: Load the config
         const config = await loadConfig();
+
+        const fileNames = {
+            file1: config.outputDir + '-index' + '.html',
+            file2: config.outputDir + '-diff-terms-and-defs' + '.html'
+        }
+
+        menu = `
+            <a class='btn btn-outline-secondary mb-5' href="${'./'}${fileNames.file1}">Compare 2 repos</a> <a class='btn btn-outline-secondary mb-5' href="${'./'}${fileNames.file2}">Diff 2 repos</a>
+        `;
 
         // if config.outputDir as a directory exists, stop the process
         if (fs.existsSync(path.join(process.cwd(), config.outputDir))) {
@@ -57,21 +74,21 @@ async function loadConfig() {
 
         await extractTermsAndDefsToJson(
             path.join(config.outputDir, config.repoA.name),
-            path.join(config.outputDir, 'extracted-terms-and-defs-' + config.repoA.name + '.json')
+            path.join(config.outputDir, fileNamePrefixes.extractedTermsAndDefs + config.repoA.name + '.json')
         );
         await extractTermsAndDefsToJson(
             path.join(config.outputDir, config.repoB.name),
-            path.join(config.outputDir, 'extracted-terms-and-defs-' + config.repoB.name + '.json')
+            path.join(config.outputDir, fileNamePrefixes.extractedTermsAndDefs + config.repoB.name + '.json')
         );
 
         // Compare terms and definitions
         await diffTermsAndDefs(
-            path.join(config.outputDir, 'extracted-terms-and-defs-' + config.repoA.name + '.json'),
-            path.join(config.outputDir, 'extracted-terms-and-defs-' + config.repoB.name + '.json'),
-            path.join(`diff-terms-and-defs-${config.outputDir}.html`));
+            path.join(config.outputDir, fileNamePrefixes.extractedTermsAndDefs + config.repoA.name + '.json'),
+            path.join(config.outputDir, fileNamePrefixes.extractedTermsAndDefs + config.repoB.name + '.json'),
+            fileNames.file2, menu);
 
-        const jsonA = 'extracted-terms-' + config.repoA.name + '.json';
-        const jsonB = 'extracted-terms-' + config.repoB.name + '.json';
+        const jsonA = fileNamePrefixes.extractedTerms + config.repoA.name + '.json';
+        const jsonB = fileNamePrefixes.extractedTerms + config.repoB.name + '.json';
 
         const objectA = await loadJSON(path.join(config.outputDir, jsonA)).catch(console.error);
         const objectB = await loadJSON(path.join(config.outputDir, jsonB)).catch(console.error);
@@ -88,7 +105,7 @@ async function loadConfig() {
 
         // Dynamically import createIndexHtmlFile after config is loaded
         const { createIndexHtmlFile } = await import('./src/create-indexhtml-file.mjs');
-        await createIndexHtmlFile();
+        await createIndexHtmlFile(fileNames.file1, menu);
 
     } catch (error) {
         console.error('❌ An error occurred:', error);

@@ -47,7 +47,7 @@ function createHtmlDiff(text1, text2) {
  * @param {string} jsonPath2 - Path to the second JSON file
  * @param {string} outputHtmlPath - Path for the output HTML file
  */
-async function diffTermsAndDefs(jsonPath1, jsonPath2, outputHtmlPath) {
+async function diffTermsAndDefs(jsonPath1, jsonPath2, outputHtmlPath, menu) {
     try { 
         // Read and parse JSON files
         const file1Json = JSON.parse(await readFile(jsonPath1, 'utf8'));
@@ -99,6 +99,9 @@ async function diffTermsAndDefs(jsonPath1, jsonPath2, outputHtmlPath) {
 </head>
 <body>
 <div class="container mt-4">
+${menu}
+
+    <h1 class="mb-4 text-primary">Diff two repos</h1>
     <table class="table table-bordered table-striped">
         <thead class="table-light">
             <tr>
