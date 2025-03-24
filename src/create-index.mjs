@@ -59,8 +59,18 @@ const createIndex = async (fileName, menu) => {
         
         ${menu}
         <h1 class="mb-4 text-primary">Compare two repos</h1>
-        
+
+        <h2>Introduction</h2>
+
         <p>This tool shows the comparison of terms between two repositories and also a diff between the terms and definitions of two repositories.</p>
+
+        <h2>How to run this tool</h2>
+
+        You can run this tool by:
+        <ul>
+            <li>Going to the directory where you want result files of this tool</li>
+            <li>Go to you command line and run this command: <pre>npx @korkor/compare-spec-up-t-repos</pre></li>
+        </ul>
 
         <h2>More info</h2>
         <p>Find more info at 👉 <a href="https://github.com/kordwarshuis/compare-spec-up-t-repos/blob/main/README.md">the README.md on GitHub</a></p>
