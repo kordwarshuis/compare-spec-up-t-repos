@@ -15,8 +15,6 @@ const fileNamePrefixes = {
     diffTermsAndDefs: 'diff-terms-and-defs-'
 };
 
-let menu;
-
 async function loadConfig() {
     try {
         const configModule = await import(path.join(process.cwd(), 'config.js'));
@@ -46,7 +44,7 @@ async function loadConfig() {
             file2: config.outputDir + '-diff-terms-and-defs' + '.html'
         }
 
-        menu = `
+        const menu = `
             <a class='btn btn-outline-secondary mb-5' href="${'./'}${fileNames.file1}">Compare 2 repos</a> <a class='btn btn-outline-secondary mb-5' href="${'./'}${fileNames.file2}">Diff 2 repos</a>
         `;
 
