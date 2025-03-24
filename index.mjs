@@ -3,11 +3,12 @@
 import fs from 'fs';
 import path from "path";
 import { downloadMarkdownFiles } from "./src/download-markdown-files.mjs";
+import { createIndex } from './src/create-index.mjs';
 import { getUserInput } from './get-user-input.mjs';
 import { extractTermsToJson } from './src/extract-terms-to-json.mjs';
 import { compareTerms } from "./src/compare-terms.mjs";
 import { extractTermsAndDefsToJson } from './src/extract-terms-and-defs-to-json.mjs';
-import { diffTermsAndDefs } from './src/diff-terms-and-defs.mjs';
+import { diffTermsAndDefs } from './src/create-diff-terms-and-defs.mjs';
 
 const fileNamePrefixes = {
     extractedTerms: 'extracted-terms-',
@@ -40,12 +41,13 @@ async function loadConfig() {
         const config = await loadConfig();
 
         const fileNames = {
+            file0: 'index' + '.html',
             file1: config.outputDir + '-index' + '.html',
             file2: config.outputDir + '-diff-terms-and-defs' + '.html'
         }
 
         const menu = `
-            <a class='btn btn-outline-secondary mb-5' href="${'./'}${fileNames.file1}">Compare 2 repos</a> <a class='btn btn-outline-secondary mb-5' href="${'./'}${fileNames.file2}">Diff 2 repos</a>
+            <a class='btn btn-outline-secondary mb-5' href="${'./'}${fileNames.file0}">Home</a> <a class='btn btn-outline-secondary mb-5' href="${'./'}${fileNames.file1}">Compare terms</a> <a class='btn btn-outline-secondary mb-5' href="${'./'}${fileNames.file2}">Diff terms and defs</a>
         `;
 
         // if config.outputDir as a directory exists, stop the process
@@ -64,8 +66,6 @@ async function loadConfig() {
         // Step 4: Download markdown files
         await downloadMarkdownFiles(config.token, config.outputDir, config.repoA);
         await downloadMarkdownFiles(config.token, config.outputDir, config.repoB);
-
-
 
         await extractTermsToJson(path.join(config.outputDir, '/', '' + config.repoA.name));
         await extractTermsToJson(path.join(config.outputDir, '/', config.repoB.name));
@@ -101,9 +101,13 @@ async function loadConfig() {
         };
         await compareTerms(configCompare);
 
-        // Dynamically import createIndexHtmlFile after config is loaded
-        const { createIndexHtmlFile } = await import('./src/create-indexhtml-file.mjs');
-        await createIndexHtmlFile(fileNames.file1, menu);
+        // Create index file
+        await createIndex(fileNames.file0, menu);
+
+
+        // Dynamically import createCompareTerms after config is loaded
+        const { createCompareTerms } = await import('./src/create-compare-terms.mjs');
+        await createCompareTerms(fileNames.file1, menu);
 
     } catch (error) {
         console.error('❌ An error occurred:', error);
