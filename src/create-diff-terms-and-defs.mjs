@@ -47,7 +47,7 @@ function createHtmlDiff(text1, text2) {
  * @param {string} jsonPath2 - Path to the second JSON file
  * @param {string} outputHtmlPath - Path for the output HTML file
  */
-async function diffTermsAndDefs(jsonPath1, jsonPath2, outputHtmlPath, menu) {
+async function diffTermsAndDefs(jsonPath1, jsonPath2, outputHtmlPath, menu, repoAurl, repoBurl) {
     try { 
         // Read and parse JSON files
         const file1Json = JSON.parse(await readFile(jsonPath1, 'utf8'));
@@ -133,14 +133,15 @@ ${menu}
                     return purify.sanitize(mdHtml);
                 })
                 .join('\n\n');
-
+            
             const file1Display = file1Data
                 .filter(obj => obj.terms.includes(term))
                 .map(obj => {
                     const processedDef = preprocessDefinition(obj.definition);
                     const mdHtml = marked(processedDef);
                     const sanitizedHtml = purify.sanitize(mdHtml);
-                    return `<strong>${escapeHtml(obj.key)}:</strong> ${sanitizedHtml}`;
+                    const termUrl = `${repoAurl}/${escapeHtml(obj.key)}.md`;
+                    return `<strong><a target="_blank" rel="noopener" href="${termUrl}">${escapeHtml(obj.key)}</a>:</strong> ${sanitizedHtml}`;
                 })
                 .join('<br><br>');
 
@@ -150,7 +151,8 @@ ${menu}
                     const processedDef = preprocessDefinition(obj.definition);
                     const mdHtml = marked(processedDef);
                     const sanitizedHtml = purify.sanitize(mdHtml);
-                    return `<strong>${escapeHtml(obj.key)}:</strong> ${sanitizedHtml}`;
+                    const termUrl = `${repoBurl}/${escapeHtml(obj.key)}.md`;
+                    return `<strong><a target="_blank" rel="noopener" href="${termUrl}">${escapeHtml(obj.key)}</a>:</strong> ${sanitizedHtml}`;
                 })
                 .join('<br><br>');
 

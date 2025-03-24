@@ -82,7 +82,10 @@ async function loadConfig() {
         await diffTermsAndDefs(
             path.join(config.outputDir, fileNamePrefixes.extractedTermsAndDefs + config.repoA.name + '.json'),
             path.join(config.outputDir, fileNamePrefixes.extractedTermsAndDefs + config.repoB.name + '.json'),
-            fileNames.file2, menu);
+            fileNames.file2,
+            menu,
+            config.repoA.url,
+            config.repoB.url);
 
         const jsonA = fileNamePrefixes.extractedTerms + config.repoA.name + '.json';
         const jsonB = fileNamePrefixes.extractedTerms + config.repoB.name + '.json';
