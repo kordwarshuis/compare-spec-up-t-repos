@@ -3,7 +3,6 @@
 import fs from 'fs';
 import path from "path";
 import { downloadMarkdownFiles } from "./src/download-markdown-files.mjs";
-import { createIndex } from './src/create-index.mjs';
 import { getUserInput } from './get-user-input.mjs';
 import { extractTermsToJson } from './src/extract-terms-to-json.mjs';
 import { compareTerms } from "./src/compare-terms.mjs";
@@ -101,9 +100,10 @@ async function loadConfig() {
         };
         await compareTerms(configCompare);
 
+        // Dynamically import createIndex after config is loaded
+        const { createIndex } = await import('./src/create-index.mjs');
         // Create index file
         await createIndex(fileNames.file0, menu);
-
 
         // Dynamically import createCompareTerms after config is loaded
         const { createCompareTerms } = await import('./src/create-compare-terms.mjs');
