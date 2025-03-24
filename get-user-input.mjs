@@ -16,6 +16,7 @@ export async function getUserInput() {
     - Name for the output directory
     - Name and URL of the first repositor(A)
     - Name and URL of the second repositor(B)
+
     👉 For more info, see https://github.com/kordwarshuis/compare-spec-up-t-repos/blob/in/READmd
 
 ***********************************************
