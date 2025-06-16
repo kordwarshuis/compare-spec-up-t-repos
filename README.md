@@ -17,7 +17,7 @@ Read below how to make a comparison that results in an index.html file with the 
 npx @korkor/compare-spec-up-t-repos
 ```
 
-- Enter GitHub Personal Access Token
+- Enter GitHub Personal Access Token (optional for public repositories, but recommended to avoid rate limits)
 - Enter a name for the output directory (you are free to choose any name)
 - Enter a name for the first repository (you are free to choose any name)
 - Enter the URL for the first repository
