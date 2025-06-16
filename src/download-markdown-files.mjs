@@ -5,18 +5,24 @@ import url from 'url';
 import { existsSync } from 'fs'; // Import the synchronous fs module
     
 export async function downloadMarkdownFiles(token, outputDir, config) {
-    // GitHub API client with authentication
-    const github = axios.create({
+    // GitHub API client with or without authentication
+    const githubConfig = {
         baseURL: 'https://api.github.com',
         headers: {
-            'Authorization': `token ${token}`,
             'Accept': 'application/vnd.github.v3+json'
         }
-    });
+    };
+    
+    // Only add Authorization header if token is provided
+    if (token && token.trim() !== '') {
+        githubConfig.headers['Authorization'] = `token ${token}`;
+    } else {
+        console.log('⚠️  No GitHub token provided. Rate limits may apply for API requests.');
+    }
+    
+    const github = axios.create(githubConfig);
+    
     try {
-
-        // Get directory contents from GitHub
-
         // Parse the GitHub URL to construct the API endpoint
         const parsedUrl = url.parse(config.url);
         const pathParts = parsedUrl.pathname.split('/');
@@ -60,6 +66,12 @@ export async function downloadMarkdownFiles(token, outputDir, config) {
         console.error('❌ Error:', error.message);
         if (error.response) {
             console.error('❌ GitHub API response:', error.response.data);
+            
+            if (error.response.status === 403 && error.response.data.message.includes('rate limit')) {
+                console.error('❌ GitHub API rate limit exceeded. Consider using a token for higher rate limits.');
+            } else if (error.response.status === 404) {
+                console.error('❌ Repository or path not found. Make sure the repository is public or you have the correct access token.');
+            }
         }
     }
 }
