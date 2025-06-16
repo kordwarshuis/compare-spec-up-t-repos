@@ -12,7 +12,7 @@ export async function getUserInput() {
 ℹ️ This tool shows the comparison of terms between two repositories and also a diff between the terms and definitions of two repositories.
 
     You will be asked for the following information:
-    - Your GitHub Personal Access Token
+    - GitHub Personal Access Token (optional, but recommended to avoid rate limits)
     - Name for the output directory
     - Name and URL of the first repositor(A)
     - Name and URL of the second repositor(B)
@@ -34,7 +34,7 @@ export async function getUserInput() {
 
     const question = (query) => new Promise((resolve) => rl.question(query, resolve));
 
-    const token = await question('Enter your token: ');
+    const token = await question('Enter your token (press Enter to skip for public repositories): ');
     const outputDir = await question('Choose name for the output directory: ');
     const repoAname = await question('Choose a name for the first repository (A): ');
     const repoAurl = await question('Enter the URL of the first repository (A): ');
